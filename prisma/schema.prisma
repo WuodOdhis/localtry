@@ -1,0 +1,54 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  wallet    String
+  token     String   @unique
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+}
+
+model AuthNonce {
+  id        String   @id @default(cuid())
+  wallet    String
+  nonce     String   @unique
+  used      Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model Product {
+  id          String   @id @default(cuid())
+  wallet      String
+  name        String
+  price       Float
+  description String   @default("")
+  imageUrl    String   @default("")
+  category    String   @default("other")
+  stock       Int      @default(0)
+  createdAt   DateTime @default(now())
+}
+
+model StoreConfig {
+  wallet          String @id
+  receivingWallet String
+}
+
+model Order {
+  id              String   @id @default(cuid())
+  productId       String?
+  productName     String
+  amount          Float
+  buyerWallet     String?
+  merchantWallet  String
+  receivingWallet String?
+  txSignature     String?
+  status          String   @default("pending")
+  createdAt       DateTime @default(now())
+}

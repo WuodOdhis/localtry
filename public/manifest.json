@@ -1,0 +1,12 @@
+{
+  "name": "ChajiPay",
+  "short_name": "ChajiPay",
+  "description": "Non-custodial USDT payments on Solana",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0a0a",
+  "theme_color": "#f59e0b",
+  "icons": [
+    { "src": "/favicon.ico", "sizes": "48x48", "type": "image/x-icon" }
+  ]
+}
