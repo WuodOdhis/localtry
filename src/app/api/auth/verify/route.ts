@@ -13,9 +13,9 @@ export async function POST(request: Request) {
   const message = `ChajiPay\n\nSign in with your Solana wallet.\n\nWallet: ${wallet}\nNonce: ${nonce}`;
 
   try {
-    const storedNonce = await prisma.authNonce.findUnique({ where: { nonce } });
-    if (!storedNonce || storedNonce.wallet !== wallet || storedNonce.used) {
-      return NextResponse.json({ error: "Invalid nonce" }, { status: 401 });
+    const nonceTimestamp = Number(String(nonce).split(".")[0]);
+    if (!Number.isFinite(nonceTimestamp) || Date.now() - nonceTimestamp > 10 * 60 * 1000) {
+      return NextResponse.json({ error: "Expired nonce" }, { status: 401 });
     }
 
     const messageBytes = new TextEncoder().encode(message);
@@ -26,8 +26,6 @@ export async function POST(request: Request) {
     if (!valid) {
       return NextResponse.json({ error: "Invalid signature" }, { status: 401 });
     }
-
-    await prisma.authNonce.update({ where: { nonce }, data: { used: true } });
 
     const token = crypto.randomUUID();
     await prisma.session.create({
