@@ -13,11 +13,16 @@ export default function AppWalletProvider({ children }: { children: React.ReactN
     const network = process.env.NEXT_PUBLIC_SOLANA_RPC || clusterApiUrl("devnet");
 
     const wallets = useMemo(
-        () => [
-            new PhantomWalletAdapter(),
-            new SolflareWalletAdapter(),
-            new LocalWalletAdapter(),
-        ],
+        () => {
+            const productionWallets = [
+                new PhantomWalletAdapter(),
+                new SolflareWalletAdapter(),
+            ];
+
+            return process.env.NODE_ENV === "production"
+                ? productionWallets
+                : [...productionWallets, new LocalWalletAdapter()];
+        },
         []
     );
 

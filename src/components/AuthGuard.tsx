@@ -37,7 +37,14 @@ export default function AuthGuard({ children }: { children: ReactNode }) {
   }, []);
 
   const signIn = async () => {
-    if (!connected || !publicKey || !signMessage) return;
+    if (!connected || !publicKey) {
+      setError("Connect your wallet first.");
+      return;
+    }
+    if (!signMessage) {
+      setError("This wallet does not support message signing. Use Phantom or Solflare for merchant login.");
+      return;
+    }
     setSigningIn(true);
     setError("");
     try {
